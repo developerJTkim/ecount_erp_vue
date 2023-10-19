@@ -34,10 +34,19 @@ const upgradeBanner = computed(() => {
 
   <!-- 👉 Nav items -->
   <ul>
+    <VerticalNavSectionTitle :item="{ heading: 'ERP' }" />
+    <VerticalNavLink
+      :item="{
+        title: 'ERP',
+        to: 'index',
+        icon: { icon: 'mdi-home-outline' }
+      }"
+    />
+    <VerticalNavSectionTitle :item="{ heading: 'Dashboard' }" />
     <VerticalNavLink
       :item="{
         title: 'Dashboard',
-        to: 'index',
+        to: 'dashboard',
         icon: { icon: 'mdi-home-outline' }
       }"
     />
@@ -116,21 +125,6 @@ const upgradeBanner = computed(() => {
       }"
     />
   </ul>
-
-  <!-- 👉 illustration -->
-  <a
-    href="https://themeselection.com/item/materio-vuetify-vuejs-admin-template"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    <img
-      :src="upgradeBanner"
-      alt="upgrade-banner"
-      transition="scale-transition"
-      class="upgrade-banner mx-auto"
-      style="max-width: 230px"
-    >
-  </a>
 </template>
 
 <style lang="scss">
