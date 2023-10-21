@@ -5,17 +5,17 @@ import cookie from "js-cookie";
 import erpAxios from "@/plugins/erpAxios";
 import erpApi from "@/helper/erpApi";
 import Swal from "sweetalert2";
+import moment from "moment/moment";
 
 const env = import.meta.env;
 export const useErpStore = defineStore("erpStore", () => {
     const erpInfo = ref({});
 
-    //cookie.set("lwToken", token, { expires: 3, sameSite: "lax" });
     const getErpInfo = computed(() => erpInfo.value);
 
-    async function getErpInventoryItems(searchDate = '') {
+    async function getErpInventoryItems(searchDate = new Date()) {
         console.log(cookie.get("LOGIN_DATA"))
-        if(!cookie.get("LOGIN_DATA")) {
+        if(!cookie.get("LOGIN_DATA") || !cookie.get("ZONE")) {
             return Swal.fire({
                 title: `Error!`,
                 text: `Login 정보가 없습니다. Login 데이터를 조회 해주세요`,
@@ -36,14 +36,13 @@ export const useErpStore = defineStore("erpStore", () => {
             });
         }
 
+        const result = await erpAxios.post(`https://sboapi${cookie.get("ZONE")}.ecount.com/OAPI/V2/InventoryBalance/GetListInventoryBalanceStatus?SESSION_ID=${loginData.SESSION_ID}`, {
+            BASE_DATE: moment(searchDate).format('YYYYMMDD'),
+            SESSION_ID: loginData.SESSION_ID
+        })
 
-        console.log(loginData);
-        // const result = await erpAxios.post(erpApi.getZone, {
-        //     COM_CODE: COM_CODE === ''
-        //         ? env.VITE_AART_ECOUNT_COM_CODE : COM_CODE
-        // });
-        // console.log(result.data.Data)
-        // setZoneInfo(result.data?.Data?.ZONE)
+        setErpInfos(result.data.Data.Result)
+        console.log(result.data.Data.Result)
     }
 
     async function login(COM_CODE='', API_CERT_KEY ='', LAN_TYPE = 'ko-KR', ZONE =''){
@@ -77,21 +76,14 @@ export const useErpStore = defineStore("erpStore", () => {
             ZONE: cookie.get('ZONE')
         })
         console.log(result.data.Data);
-        setLoginInfo(result.data.Data.Datas);
     }
 
-    function setZoneInfo(ZONE) {
-        console.log('setZoneInfo',ZONE)
-        cookie.set('ZONE',ZONE);
-        loginInfo.value.ZONE = ZONE;
-    }
-    function setLoginInfo(result) {
-        console.log(result);
-        cookie.set('LOGIN_DATA',JSON.stringify(result));
-        loginInfo.value.LOGIN_DATA = result;
+    function setErpInfos(result) {
+        erpInfo.value = result;
     }
 
     return {
-        getErpInventoryItems
+        getErpInventoryItems,
+        getErpInfo
     };
 });

@@ -20,6 +20,7 @@
 <script setup>
 import { computed } from "vue";
 import VueDatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
 
 import moment from "moment";
 let date = computed({
@@ -33,7 +34,7 @@ let date = computed({
   },
 });
 
-const format = (date) => moment.format(date, "YYYY-MM-DD");
+const format = (date) => moment(date).format( "YYYY-MM-DD");
 
 let emit = defineEmits(["update:modelValue", "setFormatDate"]);
 
