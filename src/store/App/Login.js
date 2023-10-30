@@ -22,7 +22,6 @@ export const useLoginStore = defineStore("loginStore", () => {
             COM_CODE: COM_CODE === ''
               ? env.VITE_AART_ECOUNT_COM_CODE : COM_CODE
         });
-        console.log(result.data.Data)
         setZoneInfo(result.data?.Data?.ZONE)
     }
 
@@ -56,17 +55,14 @@ export const useLoginStore = defineStore("loginStore", () => {
             // LAN_TYPE: 'ko-KR',
             ZONE: cookie.get('ZONE')
         })
-        console.log(result.data.Data);
         setLoginInfo(result.data.Data.Datas);
     }
 
     function setZoneInfo(ZONE) {
-        console.log('setZoneInfo',ZONE)
         cookie.set('ZONE',ZONE);
         loginInfo.value.ZONE = ZONE;
     }
     function setLoginInfo(result) {
-        console.log(result);
         cookie.set('LOGIN_DATA',JSON.stringify(result));
         loginInfo.value.LOGIN_DATA = result;
     }
